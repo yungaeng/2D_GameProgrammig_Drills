@@ -1,15 +1,10 @@
+import game_framework
+import title_state
 from pico2d import *
 
-class Background1:
+class Background:
     def __init__(self):
         self.image = load_image('background1.png')
-
-    def draw(self):
-        self.image.draw(400, 30)
-
-class Background2:
-    def __init__(self):
-        self.image = load_image('background2.png')
 
     def draw(self):
         self.image.draw(400, 30)
@@ -29,33 +24,34 @@ class Boy:
 
 
 def handle_events():
-    global running
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+            game_framework.change_state(title_state)
+    delay(0.01)
 
-open_canvas()
-
-
-boy = Boy()
-grass = Grass()
+boy = None
+backgound = None
 running = True
 
-# game main loop code
-while running:
-    handle_events()
 
+def enter():
+    global boy, background, running
+    boy = Boy()
+    backgound = Background()
+    running = True
+
+def playexiit():
+    global boy, background, running
+    del boy
+    del backgound
+
+def update():
     boy.update()
 
+def draw():
     clear_canvas()
-    grass.draw()
+    backgound.draw()
     boy.draw()
-    update_canvas()
-
-    delay(0.05)
-
-# finalization code
-close_canvas()
