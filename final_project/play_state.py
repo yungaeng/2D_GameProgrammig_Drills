@@ -33,25 +33,25 @@ def handle_events():
     delay(0.01)
 
 boy = None
-backgound = None
+background = None
 running = True
 
 
 def enter():
     global boy, background, running
     boy = Boy()
-    backgound = Background()
+    background = Background()
     running = True
 
-def playexiit():
+def exiit():
     global boy, background, running
     del boy
-    del backgound
+    del background
 
 def update():
     boy.update()
 
 def draw():
     clear_canvas()
-    backgound.draw()
+    background.draw()
     boy.draw()
