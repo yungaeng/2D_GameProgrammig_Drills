@@ -75,7 +75,6 @@ class SLEEP:
 
     def exit(self):
         print('EXIT SLEEP')
-        pass
 
     def do(self):
         self.frame = (self.frame + 1) % 8
@@ -97,26 +96,32 @@ class AUTO_RUN:
     def enter(self, event):
         print('ENTER AUTO_RUN')
 
+
     def exit(self):
         print('EXIT AUTO_RUN')
         self.face_dir = self.dir
 
     def do(self):
         self.frame = (self.frame + 1) % 8
-        self.x += self.dir
+        self.x = self.x + 0.5
         self.x = clamp(0, self.x, 800)
 
+        if self.x == 0:
+            self.dir += 1
+        elif self.x == 800:
+            self.dir -= 1
+
     def draw(self):
-        if self.dir == -1:
+        if self.face_dir == -1:
             self.image.clip_draw(self.frame*100, 0, 100, 100, self.x, self.y)
-        elif self.dir == 1:
+        elif self.face_dir == 1:
             self.image.clip_draw(self.frame*100, 100, 100, 100, self.x, self.y)
 
 
 next_state = {
     IDLE: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, TIMER: SLEEP, AD: AUTO_RUN},
     RUN: {RU: IDLE, LU: IDLE, LD: IDLE, RD: IDLE, AD: AUTO_RUN},
-    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN},
+    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, AD: SLEEP},
     AUTO_RUN: {AD: IDLE, RU: RUN, LU: RUN, RD: RUN, LD: RUN}
 }
 
