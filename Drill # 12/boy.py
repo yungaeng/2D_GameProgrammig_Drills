@@ -1,10 +1,13 @@
 from pico2d import *
+import game_world
+
 
 # 이벤트 정의
 # RD, LD, RU, LU = 0, 1, 2, 3
-RD, LD, RU, LU, TIMER, AD = range(6)
+RD, LD, RU, LU, TIMER, AD, SPACE = range(7)
 
 key_event_table = {
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE,
     (SDL_KEYDOWN, SDLK_a): AD,
     (SDL_KEYDOWN, SDLK_RIGHT): RD,
     (SDL_KEYDOWN, SDLK_LEFT): LD,
@@ -22,8 +25,10 @@ class IDLE:
         self.timer = 1000
         self.dir = 0
 
-    def exit(self):
+    def exit(self, event):
         print('EXIT IDLE')
+        if event == SPACE:
+            self.fire_ball()
 
     def do(self):
         self.frame = (self.frame + 1) % 8
@@ -51,9 +56,11 @@ class RUN:
         elif event == LU:
             self.dir += 1
 
-    def exit(self):
+    def exit(self, event):
         print('EXIT RUN')
         self.face_dir = self.dir
+        if event == SPACE:
+            self.fire_ball()
 
     def do(self):
         self.frame = (self.frame + 1) % 8
@@ -73,8 +80,10 @@ class SLEEP:
         print('ENTER SLEEP')
         self.frame = 0
 
-    def exit(self):
+    def exit(self, event):
         print('EXIT SLEEP')
+        if event == SPACE:
+            self.fire_ball()
 
     def do(self):
         self.frame = (self.frame + 1) % 8
@@ -103,25 +112,24 @@ class AUTO_RUN:
 
     def do(self):
         self.frame = (self.frame + 1) % 8
-        self.x = self.x + 0.5
-        self.x = clamp(0, self.x, 800)
-
+        self.x += self.dir
         if self.x == 0:
             self.dir += 1
         elif self.x == 800:
             self.dir -= 1
+        self.x = clamp(0, self.x, 800)
 
     def draw(self):
-        if self.face_dir == -1:
-            self.image.clip_draw(self.frame*100, 0, 100, 100, self.x, self.y)
-        elif self.face_dir == 1:
-            self.image.clip_draw(self.frame*100, 100, 100, 100, self.x, self.y)
+        if self.dir == -1:
+            self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y, 200, 200)
+        elif self.dir == 1:
+            self.image.clip_draw(self.frame * 100, 100, 100, 100, self.x, self.y, 200, 200)
 
 
 next_state = {
-    IDLE: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, TIMER: SLEEP, AD: AUTO_RUN},
-    RUN: {RU: IDLE, LU: IDLE, LD: IDLE, RD: IDLE, AD: AUTO_RUN},
-    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, AD: SLEEP},
+    IDLE: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, TIMER: SLEEP, AD: AUTO_RUN, SPACE: IDLE},
+    RUN: {RU: IDLE, LU: IDLE, LD: IDLE, RD: IDLE, AD: AUTO_RUN, SPACE: RUN},
+    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, AD: SLEEP, SPACE: SLEEP},
     AUTO_RUN: {AD: IDLE, RU: RUN, LU: RUN, RD: RUN, LD: RUN}
 }
 
@@ -148,8 +156,11 @@ class Boy:
 
         if self.event_que:
             event = self.event_que.pop()
-            self.cur_state.exit(self)
-            self.cur_state = next_state[self.cur_state][event]
+            self.cur_state.exit(self, event)
+            try:
+                self.cur_state = next_state[self.cur_state][event]
+            except KeyError:
+                print(self.cur_state, event)
             self.cur_state.enter(self, event)
 
     def draw(self):
@@ -162,3 +173,8 @@ class Boy:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def fire_ball(self):
+        print('FIRE BALL')
+        ball = Ball(self.x, self.y, self.dir * 3)
+        game_world.add_object(ball, 1)
