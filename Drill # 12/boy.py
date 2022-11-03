@@ -1,7 +1,6 @@
 from pico2d import *
 import game_world
 
-
 # 이벤트 정의
 # RD, LD, RU, LU = 0, 1, 2, 3
 RD, LD, RU, LU, TIMER, AD, SPACE = range(7)
@@ -82,8 +81,6 @@ class SLEEP:
 
     def exit(self, event):
         print('EXIT SLEEP')
-        if event == SPACE:
-            self.fire_ball()
 
     def do(self):
         self.frame = (self.frame + 1) % 8
@@ -176,5 +173,5 @@ class Boy:
 
     def fire_ball(self):
         print('FIRE BALL')
-        ball = Ball(self.x, self.y, self.dir * 3)
+        ball = Ball(self.x, self.y, self.dir*3)
         game_world.add_object(ball, 1)

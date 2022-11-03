@@ -3,7 +3,7 @@ import game_framework
 import game_world
 from grass import Grass
 from boy import Boy
-from ball import Ball
+
 
 def handle_events():
     events = get_events()
@@ -19,6 +19,7 @@ def handle_events():
 # 초기화
 def enter():
     global boy, grass
+    boy = Boy()
     grass = Grass()
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
