@@ -1,9 +1,13 @@
 from pico2d import *
 import game_world
 
+
+from ball import Ball
+
 # 이벤트 정의
 # RD, LD, RU, LU = 0, 1, 2, 3
 RD, LD, RU, LU, TIMER, AD, SPACE = range(7)
+
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_SPACE): SPACE,
@@ -173,5 +177,5 @@ class Boy:
 
     def fire_ball(self):
         print('FIRE BALL')
-        ball = Ball(self.x, self.y, self.dir*3)
+        ball = Ball(self.x, self.y, self.face_dir)
         game_world.add_object(ball, 1)
