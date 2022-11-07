@@ -3,6 +3,11 @@ import game_framework
 import game_world
 from bird import Bird
 
+
+def handle_events():
+    pass
+
+
 bird = None
 
 
@@ -10,7 +15,7 @@ bird = None
 def enter():
     global bird
     bird = Bird()
-    game_world.add_object(Bird, 0)
+    game_world.add_object(Bird, 1)
 
 
 # 종료

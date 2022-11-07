@@ -40,7 +40,6 @@ class TestGameState:
         print("State [%s] draw" % self.name)
 
 
-
 running = None
 stack = []
 
