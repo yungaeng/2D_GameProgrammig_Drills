@@ -1,8 +1,13 @@
 from pico2d import *
 import game_framework
 import game_world
+
 from grass import Grass
 from boy import Boy
+
+
+boy = None
+grass = None
 
 def handle_events():
     events = get_events()
@@ -17,39 +22,32 @@ def handle_events():
 
 # 초기화
 def enter():
-    global boy, grass, grass2
+    global boy, grass
     boy = Boy()
     grass = Grass()
-    grass2 = Grass()
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
-    game_world.add_object(grass2, 1)
+
 
 # 종료
 def exit():
     game_world.clear()
 
-
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
 
-
 def draw_world():
     for game_object in game_world.all_objects():
         game_object.draw()
-
 
 def draw():
     clear_canvas()
     draw_world()
     update_canvas()
 
-
-
 def pause():
     pass
-
 
 def resume():
     pass
