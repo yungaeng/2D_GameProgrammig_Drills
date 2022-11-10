@@ -2,6 +2,7 @@ import random
 from pico2d import *
 import game_world
 
+
 class Ball:
     image = None
 
@@ -21,17 +22,16 @@ class Ball:
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10
 
     def handle_collision(self, other, group):
-        if group  == 'boy:ball':
+        if group == 'boy:ball':
             game_world.remove_object(self)
+        elif group == 'grass:ball':
+            self.fall_speed = 0
 
-    def stop(self):
-        self.fall_speed = 0
 
+class BigBall():
 
-class BigBall(Ball):
-
-    MIN_FALL_SPEED = 50 # 50 pps = 1.5 meter per sec
-    MAX_FALL_SPEED = 200 # 200 pps = 6 meter per sec
+    MIN_FALL_SPEED = 1 # 50 pps = 1.5 meter per sec
+    MAX_FALL_SPEED = 2 # 200 pps = 6 meter per sec
     image = None
 
     def __init__(self):
@@ -42,3 +42,14 @@ class BigBall(Ball):
 
     def get_bb(self):
         return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+
+    def draw(self):
+        self.image.draw(self.x, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        self.y -= self.fall_speed
+
+    def handle_collision(self, other, group):
+        if group == 'grass:ball':
+            self.fall_speed = 0

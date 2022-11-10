@@ -66,6 +66,7 @@ def all_collision_pairs():
             for b in pairs[1]:
                 yield a, b, group
 
+
 def remove_collision_object(o):
     for pairs in collision_group.values():
         if o in pairs[0]: pairs[0].remove(o)
