@@ -56,8 +56,6 @@ class WalkingState:
         elif event == DOWNKEY_UP:
             boy.y_velocity += RUN_SPEED_PPS
 
-
-
     def exit(boy, event):
         pass
 
@@ -65,11 +63,13 @@ class WalkingState:
         boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
         boy.x += boy.x_velocity * game_framework.frame_time
         boy.y += boy.y_velocity * game_framework.frame_time
-
-
+        boy.x = clamp(50, boy.x, server.background.w - 51)
+        boy.y = clamp(50, boy.y, server.background.h - 51)
 
     def draw(boy):
         sx, sy = boy.x, boy.y
+
+        sx, sy = boy.x - server.background.window_left, boy.y - server.background.window_bottom
 
         boy.font.draw(sx - 40, sy + 40, '(%d, %d)' % (boy.x, boy.y), (255, 255, 0))
 
@@ -114,10 +114,8 @@ class Boy:
         self.cur_state.enter(self, None)
         self.x, self.y = get_canvas_width() // 2, get_canvas_height() // 2
 
-
     def get_bb(self):
-        return self.x - 50, self.y - 50, self.x + 50, self.y + 50
-
+        return self.window_left, self.window_bottom, self.window_left + 10, self.window_bottom + 100
 
     def set_background(self, bg):
         self.bg = bg
@@ -135,14 +133,15 @@ class Boy:
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
 
-
-
     def draw(self):
         self.cur_state.draw(self)
-
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def handle_collision(self, other, group):
+        pass
 

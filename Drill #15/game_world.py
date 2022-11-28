@@ -68,7 +68,6 @@ def add_collision_pairs(a, b, group):
     print(collision_group)
 
 
-
 def all_collision_pairs():
     for group, pairs in collision_group.items():
         for a in pairs[0]:
