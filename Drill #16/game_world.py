@@ -82,12 +82,14 @@ def update():
         game_object.update()
 
 
-
-
 def save():
-    # fill here
-    pass
+    game = [objects, collision_group]
+    with open('game.sav', 'wb') as f:
+        pickle.dump(game, f)
+
 
 def load():
-    # fill here
-    pass
+    global objects, collision_group
+    with open('game.sav', 'rb') as f:
+        game = pickle.load(f)
+        objects, collision_group = game[0], game[1]

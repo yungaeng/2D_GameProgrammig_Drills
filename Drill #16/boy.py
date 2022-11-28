@@ -127,19 +127,20 @@ class Boy:
         self.cur_state.enter(self, None)
         self.start_time = get_time()
 
-
-
     def __getstate__(self):
-        # fill here
-        pass
+        state = {'x': self.x,
+                 'y': self.y,
+                 'dir': self.dir,
+                 'cur_state': self.cur_state}
+        return state
+
     def __setstate__(self, state):
-        # fill here
-        pass
+        self.__init__()
+        self.__dict__.update(state)
 
     def get_bb(self):
         # fill here
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
-
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -160,7 +161,6 @@ class Boy:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
-
 
     def handle_collision(self, other, group):
         pass
