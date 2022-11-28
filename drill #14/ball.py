@@ -24,8 +24,8 @@ class Ball:
     def handle_collision(self, other, group):
         if group == 'boy:ball':
             game_world.remove_object(self)
-        elif group == 'grass:ball':
-            self.fall_speed = 0
+            game_world.remove_collision_object(self)
+
 
 
 class BigBall():
@@ -53,3 +53,4 @@ class BigBall():
     def handle_collision(self, other, group):
         if group == 'grass:ball':
             self.fall_speed = 0
+            game_world.remove_collision_object(self)
